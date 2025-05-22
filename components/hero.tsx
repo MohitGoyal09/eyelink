@@ -129,7 +129,7 @@ export function Hero() {
             Bridging Hearts
           </h1>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Paving Ways to Inclusivity
+            Paving Ways 
           </h1>
         </motion.div>
 
