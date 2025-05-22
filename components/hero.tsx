@@ -5,14 +5,100 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+
+const AnimatedBlob = ({
+  className,
+  size = "w-64 h-64",
+  delay = 0,
+  duration = 20,
+  blur = "blur-3xl",
+  initialX,
+  initialY,
+  animate,
+}) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <motion.div
+      className={cn(
+        "absolute rounded-full",
+        isDark ? "opacity-30 bg-primary/40" : "opacity-50 bg-primary/60",
+        size,
+        blur,
+        className
+      )}
+      initial={{
+        x: initialX,
+        y: initialY,
+      }}
+      animate={animate}
+      transition={{
+        duration,
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: "easeInOut",
+        delay,
+      }}
+    />
+  );
+};
 
 export function Hero() {
   const router = useRouter();
 
   return (
-    <div className="relative overflow-hidden bg-background">
-      {/* Simple background with subtle pattern */}
-      <div className="absolute inset-0 bg-grid-small-black/[0.2] -z-10" />
+    <div className="relative overflow-hidden bg-background min-h-[650px] lg:min-h-[750px]">
+      {/* Blue blobs */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        {/* Large blob left */}
+        <AnimatedBlob
+          size="w-96 h-96"
+          blur="blur-3xl"
+          initialX="-20%"
+          initialY="10%"
+          animate={{ x: "-10%", y: "15%" }}
+          delay={0}
+          duration={15}
+        />
+
+        {/* Medium blob right top */}
+        <AnimatedBlob
+          size="w-64 h-64"
+          blur="blur-2xl"
+          initialX="75%"
+          initialY="-10%"
+          animate={{ x: "70%", y: "0%" }}
+          delay={2}
+          duration={18}
+        />
+
+        {/* Small blob bottom left */}
+        <AnimatedBlob
+          size="w-24 h-24"
+          blur="blur-xl"
+          initialX="10%"
+          initialY="80%"
+          animate={{ x: "15%", y: "75%" }}
+          delay={1}
+          duration={12}
+        />
+
+        {/* Small blob bottom right */}
+        <AnimatedBlob
+          size="w-40 h-40"
+          blur="blur-2xl"
+          initialX="80%"
+          initialY="70%"
+          animate={{ x: "85%", y: "65%" }}
+          delay={3}
+          duration={20}
+        />
+      </div>
+
+      {/* Simple background with subtle pattern - reduced opacity for better visibility of blobs */}
+      <div className="absolute inset-0 bg-grid-small-black/[0.1] -z-10" />
 
       {/* Content */}
       <div className="relative flex flex-col items-center justify-center px-6 py-24 text-center space-y-10 max-w-5xl mx-auto">

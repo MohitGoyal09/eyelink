@@ -27,6 +27,13 @@ const WheelchairMapPage = () => {
   const [userAddedPoints, setUserAddedPoints] = useState<AccessibilityPoint[]>(
     []
   );
+  // Add state for user location
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null
+  );
+  const userMarkerRef = useRef<any>(null);
+  const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   // Function to load and initialize the map
   const initializeMap = useCallback(async () => {
@@ -166,6 +173,21 @@ const WheelchairMapPage = () => {
         // Create popup content with information about the point
         const title = getPointTitle(point);
         const description = getPointDescription(point);
+
+        // Add distance from user if user location is available
+        let distanceInfo = "";
+        if (userLocation) {
+          const distance = calculateDistance(
+            userLocation[0],
+            userLocation[1],
+            point.lat,
+            point.lon
+          );
+          distanceInfo = `<div class="distance-info">
+            <strong>Distance from you:</strong> ${distance.toFixed(2)} km
+          </div>`;
+        }
+
         const popupContent = `
           <div class="popup-content">
             <h3>${title}</h3>
@@ -177,6 +199,7 @@ const WheelchairMapPage = () => {
               </div>`
                 : ""
             }
+            ${distanceInfo}
           </div>
         `;
 
@@ -186,6 +209,154 @@ const WheelchairMapPage = () => {
           .addTo(markersLayerRef.current);
       }
     });
+  };
+
+  // Calculate distance between two points in kilometers using Haversine formula
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  // Function to get user's current location
+  const getUserLocation = useCallback(async () => {
+    if (!map) return;
+
+    setIsLocating(true);
+    setLocationError(null);
+
+    try {
+      // First check if geolocation is supported
+      if (!navigator.geolocation) {
+        throw new Error("Geolocation is not supported by your browser");
+      }
+
+      // Check for permissions
+      if (navigator.permissions && navigator.permissions.query) {
+        const permissionStatus = await navigator.permissions.query({
+          name: "geolocation",
+        });
+
+        if (permissionStatus.state === "denied") {
+          throw new Error(
+            "Location permission is denied. Please enable location access in your browser settings and try again."
+          );
+        }
+
+        // If permission is prompt, we'll let the getCurrentPosition handle it
+        if (permissionStatus.state === "prompt") {
+          console.log("Location permission will be requested");
+        }
+      }
+
+      const position = await new Promise<GeolocationPosition>(
+        (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          });
+        }
+      );
+
+      const { latitude, longitude } = position.coords;
+      setUserLocation([latitude, longitude]);
+
+      // Center map on user's location
+      map.setView([latitude, longitude], 16);
+
+      // Update the user marker
+      updateUserMarker([latitude, longitude]);
+
+      // Load accessibility data around user's location
+      const radius = 0.01; // Approximately 1km radius
+      const bbox: [number, number, number, number] = [
+        latitude - radius,
+        longitude - radius,
+        latitude + radius,
+        longitude + radius,
+      ];
+
+      await loadAccessibilityData(bbox);
+    } catch (error: any) {
+      console.error("Error getting user location:", error);
+
+      // Provide more specific error messages based on the error code
+      if (error.code) {
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            setLocationError(
+              "Location permission denied. Please enable location access in your browser settings and try again."
+            );
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            setLocationError(
+              "Your location information is unavailable. Please try again later."
+            );
+            break;
+          case 3: // TIMEOUT
+            setLocationError(
+              "The request to get your location timed out. Please try again."
+            );
+            break;
+          default:
+            setLocationError(
+              error.message || "Unable to get your location. Please try again."
+            );
+        }
+      } else {
+        setLocationError(
+          error.message || "Unable to get your location. Please try again."
+        );
+      }
+    } finally {
+      setIsLocating(false);
+    }
+  }, [map, loadAccessibilityData]);
+
+  // Update user marker on the map
+  const updateUserMarker = async (location: [number, number]) => {
+    if (!map) return;
+
+    const L = await import("leaflet");
+
+    // Remove existing user marker if it exists
+    if (userMarkerRef.current) {
+      userMarkerRef.current.remove();
+    }
+
+    // Create a user location marker with a different style
+    const userIcon = L.divIcon({
+      className: "user-location-marker",
+      html: `
+        <div class="user-marker-outer">
+          <div class="user-marker-inner"></div>
+        </div>
+      `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+    });
+
+    // Add the user marker to the map
+    userMarkerRef.current = L.marker(location, {
+      icon: userIcon,
+      zIndexOffset: 1000, // Ensure user marker is on top
+    })
+      .addTo(map)
+      .bindPopup("<strong>Your Location</strong>");
   };
 
   // Handle map click for adding new points
@@ -209,6 +380,13 @@ const WheelchairMapPage = () => {
       }
     };
   }, [initializeMap]);
+
+  // Automatically get user location after map is initialized
+  useEffect(() => {
+    if (map && !isLocating && !userLocation) {
+      getUserLocation();
+    }
+  }, [map, getUserLocation, isLocating, userLocation]);
 
   // Set up map click event listener when addingPoint changes
   useEffect(() => {
@@ -240,7 +418,7 @@ const WheelchairMapPage = () => {
     if (accessibilityData && map) {
       updateMapMarkers(accessibilityData);
     }
-  }, [accessibilityData, map]);
+  }, [accessibilityData, map, userLocation]);
 
   // Add a new accessibility point
   const handleAddPoint = (point: Omit<AccessibilityPoint, "id">) => {
@@ -295,7 +473,7 @@ const WheelchairMapPage = () => {
       </header>
 
       <main className="flex-grow p-4">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 flex-wrap gap-2">
           <button
             onClick={() => setAddingPoint(!addingPoint)}
             className={`px-4 py-2 rounded-md ${
@@ -307,6 +485,46 @@ const WheelchairMapPage = () => {
             {addingPoint ? "Cancel Adding Point" : "Add Accessibility Point"}
           </button>
         </div>
+
+        {isLocating && (
+          <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded flex items-center">
+            <svg className="animate-spin mr-2 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Detecting your location...</span>
+          </div>
+        )}
+
+        {locationError && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded flex flex-col">
+            <div className="flex items-start">
+              <svg className="w-5 h-5 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd"></path>
+              </svg>
+              <div>
+                <p className="font-medium">{locationError}</p>
+                {locationError.includes("permission") && (
+                  <div className="mt-2">
+                    <p className="text-sm">How to enable location permissions:</p>
+                    <ul className="list-disc ml-5 text-sm mt-1">
+                      <li>Click the lock/info icon in your browser's address bar</li>
+                      <li>Select "Site settings" or "Permissions"</li>
+                      <li>Enable "Location" permission</li>
+                      <li>Refresh the page and try again</li>
+                    </ul>
+                    <button 
+                      onClick={getUserLocation}
+                      className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           {loading && (
@@ -402,6 +620,20 @@ const WheelchairMapPage = () => {
                   No wheelchair access
                 </span>
               </div>
+
+              {userLocation && (
+                <div className="flex items-center mt-2">
+                  <div
+                    className="user-marker-outer mr-2"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <div className="user-marker-inner"></div>
+                  </div>
+                  <span className="text-gray-700 dark:text-gray-400">
+                    Your current location
+                  </span>
+                </div>
+              )}
             </div>
 
             <h3 className="text-md font-semibold mt-4 mb-2 text-gray-800 dark:text-gray-100">
@@ -478,6 +710,54 @@ const WheelchairMapPage = () => {
         .wheelchair-no {
           background-color: #ef4444;
           color: white;
+        }
+
+        .distance-info {
+          margin-top: 8px;
+          padding: 3px 6px;
+          background-color: #f3f4f6;
+          border-radius: 4px;
+          font-size: 0.9em;
+        }
+
+        .user-location-marker {
+          background: transparent;
+        }
+
+        .user-marker-outer {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background-color: rgba(59, 130, 246, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: pulse 2s infinite;
+        }
+
+        .user-marker-inner {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background-color: rgb(59, 130, 246);
+          border: 2px solid white;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+          }
+
+          70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+          }
+
+          100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+          }
         }
       `}</style>
     </div>
