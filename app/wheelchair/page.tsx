@@ -396,7 +396,7 @@ const WheelchairMapPage = () => {
       map.on("click", handleMapClick);
       // Change cursor to indicate clickable
       if (mapRef.current) {
-        mapRef.current.style.cursor = "crosshair";
+        mapRef.current.style.cursor = "pointer";
       }
     } else {
       map.off("click", handleMapClick);
@@ -409,6 +409,9 @@ const WheelchairMapPage = () => {
     return () => {
       if (map) {
         map.off("click", handleMapClick);
+        if (mapRef.current) {
+          mapRef.current.style.cursor = "";
+        }
       }
     };
   }, [map, addingPoint, handleMapClick]);
@@ -457,40 +460,107 @@ const WheelchairMapPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white pt-16 md:pt-20">
       <Head>
         <title>Wheelchair Accessibility Map</title>
         <meta name="description" content="Map of wheelchair ramp locations" />
       </Head>
 
-      <header className="bg-blue-600 text-white p-4">
-        <h1 className="text-2xl md:text-3xl font-bold">
-          Wheelchair Accessibility Map
-        </h1>
-        <p className="text-sm md:text-base">
-          Find wheelchair ramps and accessible entrances
-        </p>
-      </header>
-
-      <main className="flex-grow p-4">
-        <div className="flex justify-end mb-4 flex-wrap gap-2">
+      <main className="flex-grow p-3 md:p-4 pt-6 md:pt-8 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4 md:mb-6">
+          <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            Wheelchair Accessibility Map
+          </h1>
           <button
             onClick={() => setAddingPoint(!addingPoint)}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-4 py-2.5 rounded-md flex items-center justify-center gap-2 shadow-sm font-medium ${
               addingPoint
                 ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            } transition-colors`}
+                : "bg-green-600 text-white hover:bg-green-700"
+            } transition-colors w-full md:w-auto`}
+            aria-label={
+              addingPoint
+                ? "Cancel adding accessibility point"
+                : "Add new accessibility point"
+            }
           >
-            {addingPoint ? "Cancel Adding Point" : "Add Accessibility Point"}
+            {addingPoint ? (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Cancel
+              </>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Add Accessibility Point
+              </>
+            )}
           </button>
         </div>
 
+        {addingPoint && (
+          <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>
+              Click anywhere on the map to add a new accessibility point
+            </span>
+          </div>
+        )}
+
         {isLocating && (
           <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded flex items-center">
-            <svg className="animate-spin mr-2 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg
+              className="animate-spin mr-2 h-5 w-5 text-blue-700"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             <span>Detecting your location...</span>
           </div>
@@ -499,21 +569,34 @@ const WheelchairMapPage = () => {
         {locationError && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded flex flex-col">
             <div className="flex items-start">
-              <svg className="w-5 h-5 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd"></path>
+              <svg
+                className="w-5 h-5 mr-2 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                  clipRule="evenodd"
+                ></path>
               </svg>
               <div>
                 <p className="font-medium">{locationError}</p>
                 {locationError.includes("permission") && (
                   <div className="mt-2">
-                    <p className="text-sm">How to enable location permissions:</p>
+                    <p className="text-sm">
+                      How to enable location permissions:
+                    </p>
                     <ul className="list-disc ml-5 text-sm mt-1">
-                      <li>Click the lock/info icon in your browser's address bar</li>
+                      <li>
+                        Click the lock/info icon in your browser's address bar
+                      </li>
                       <li>Select "Site settings" or "Permissions"</li>
                       <li>Enable "Location" permission</li>
                       <li>Refresh the page and try again</li>
                     </ul>
-                    <button 
+                    <button
                       onClick={getUserLocation}
                       className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
                     >
@@ -559,9 +642,9 @@ const WheelchairMapPage = () => {
           ></div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-100">
               About This Map
             </h2>
             <p className="text-gray-700 dark:text-gray-400">
@@ -580,8 +663,8 @@ const WheelchairMapPage = () => {
             </ul>
           </div>
 
-          <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">
+          <div className="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-100">
               Legend
             </h2>
             <h3 className="text-md font-semibold mt-1 mb-2 text-gray-800 dark:text-gray-100">
@@ -658,7 +741,7 @@ const WheelchairMapPage = () => {
         )}
       </main>
 
-      <footer className="p-4 bg-gray-200 dark:bg-gray-700 text-center text-gray-700 dark:text-gray-300">
+      <footer className="p-6 mt-8 bg-gray-200 dark:bg-gray-700 text-center text-gray-700 dark:text-gray-300">
         <p>
           Data sourced from OpenStreetMap | &copy; {new Date().getFullYear()}
         </p>
