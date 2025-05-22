@@ -7,6 +7,17 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 
+interface AnimatedBlobProps {
+  className?: string;
+  size?: string;
+  delay?: number;
+  duration?: number;
+  blur?: string;
+  initialX: string | number;
+  initialY: string | number;
+  animate: { x: string | number; y: string | number };
+}
+
 const AnimatedBlob = ({
   className,
   size = "w-64 h-64",
@@ -16,7 +27,7 @@ const AnimatedBlob = ({
   initialX,
   initialY,
   animate,
-}) => {
+}: AnimatedBlobProps) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
