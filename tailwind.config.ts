@@ -1,192 +1,173 @@
 import type { Config } from "tailwindcss";
 
 export default {
-    darkMode: ["class"],
-    content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-  	extend: {
-  		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
-  			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
-  			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
-  			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
-  			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			},
-  			'color-1': 'hsl(var(--color-1))',
-  			'color-2': 'hsl(var(--color-2))',
-  			'color-3': 'hsl(var(--color-3))',
-  			'color-4': 'hsl(var(--color-4))',
-  			'color-5': 'hsl(var(--color-5))'
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
-  		keyframes: {
-  			'aurora-border': {
-  				'0%, 100%': {
-  					borderRadius: '37% 29% 27% 27% / 28% 25% 41% 37%'
-  				},
-  				'25%': {
-  					borderRadius: '47% 29% 39% 49% / 61% 19% 66% 26%'
-  				},
-  				'50%': {
-  					borderRadius: '57% 23% 47% 72% / 63% 17% 66% 33%'
-  				},
-  				'75%': {
-  					borderRadius: '28% 49% 29% 100% / 93% 20% 64% 25%'
-  				}
-  			},
-  			'aurora-1': {
-  				'0%, 100%': {
-  					top: '0',
-  					right: '0'
-  				},
-  				'50%': {
-  					top: '50%',
-  					right: '25%'
-  				},
-  				'75%': {
-  					top: '25%',
-  					right: '50%'
-  				}
-  			},
-  			'aurora-2': {
-  				'0%, 100%': {
-  					top: '0',
-  					left: '0'
-  				},
-  				'60%': {
-  					top: '75%',
-  					left: '25%'
-  				},
-  				'85%': {
-  					top: '50%',
-  					left: '50%'
-  				}
-  			},
-  			'aurora-3': {
-  				'0%, 100%': {
-  					bottom: '0',
-  					left: '0'
-  				},
-  				'40%': {
-  					bottom: '50%',
-  					left: '25%'
-  				},
-  				'65%': {
-  					bottom: '25%',
-  					left: '50%'
-  				}
-  			},
-  			'aurora-4': {
-  				'0%, 100%': {
-  					bottom: '0',
-  					right: '0'
-  				},
-  				'50%': {
-  					bottom: '25%',
-  					right: '40%'
-  				},
-  				'90%': {
-  					bottom: '50%',
-  					right: '25%'
-  				}
-  			},
-  			pulse: {
-  				'0%, 100%': {
-  					boxShadow: '0 0 0 0 var(--pulse-color)'
-  				},
-  				'50%': {
-  					boxShadow: '0 0 0 8px var(--pulse-color)'
-  				}
-  			},
-  			gradient: {
-  				to: {
-  					backgroundPosition: 'var(--bg-size) 0'
-  				}
-  			},
-  			marquee: {
-  				from: {
-  					transform: 'translateX(0)'
-  				},
-  				to: {
-  					transform: 'translateX(calc(-100% - var(--gap)))'
-  				}
-  			},
-  			'marquee-vertical': {
-  				from: {
-  					transform: 'translateY(0)'
-  				},
-  				to: {
-  					transform: 'translateY(calc(-100% - var(--gap)))'
-  				}
-  			},
-  			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
-  			},
-  			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
-  			}
-  		},
-  		animation: {
-  			pulse: 'pulse var(--duration) ease-out infinite',
-  			gradient: 'gradient 8s linear infinite',
-  			marquee: 'marquee var(--duration) infinite linear',
-  			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
-  	}
-  },
-  plugins: [require("tailwindcss-animate")],
+	darkMode: ["class"],
+	content: [
+		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
+		"./components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./app/**/*.{js,ts,jsx,tsx,mdx}",
+	],
+	theme: {
+		container: {
+			center: true,
+			padding: "1.5rem",
+			screens: {
+				"2xl": "1280px",
+			},
+		},
+		extend: {
+			colors: {
+				border: "hsl(var(--border))",
+				input: "hsl(var(--input))",
+				ring: "hsl(var(--ring))",
+				background: "hsl(var(--background))",
+				foreground: "hsl(var(--foreground))",
+				primary: {
+					DEFAULT: "hsl(var(--primary))",
+					foreground: "hsl(var(--primary-foreground))",
+				},
+				secondary: {
+					DEFAULT: "hsl(var(--secondary))",
+					foreground: "hsl(var(--secondary-foreground))",
+				},
+				destructive: {
+					DEFAULT: "hsl(var(--destructive))",
+					foreground: "hsl(var(--destructive-foreground))",
+				},
+				muted: {
+					DEFAULT: "hsl(var(--muted))",
+					foreground: "hsl(var(--muted-foreground))",
+				},
+				accent: {
+					DEFAULT: "hsl(var(--accent))",
+					foreground: "hsl(var(--accent-foreground))",
+				},
+				popover: {
+					DEFAULT: "hsl(var(--popover))",
+					foreground: "hsl(var(--popover-foreground))",
+				},
+				card: {
+					DEFAULT: "hsl(var(--card))",
+					foreground: "hsl(var(--card-foreground))",
+				},
+				// Eyelink product category colors
+				asl: "hsl(var(--asl))",
+				audionav: "hsl(var(--audionav))",
+				cabs: "hsl(var(--cabs))",
+				wheelchair: "hsl(var(--wheelchair))",
+				// Signal accent
+				signal: "hsl(var(--signal))",
+				// Surfaces (used for layered backgrounds in dark mode)
+				surface: {
+					DEFAULT: "hsl(var(--surface))",
+					raised: "hsl(var(--surface-raised))",
+					sunken: "hsl(var(--surface-sunken))",
+				},
+			},
+			borderRadius: {
+				lg: "var(--radius)",
+				md: "calc(var(--radius) - 4px)",
+				sm: "calc(var(--radius) - 8px)",
+				xl: "calc(var(--radius) + 4px)",
+				"2xl": "calc(var(--radius) + 8px)",
+			},
+			fontFamily: {
+				display: ["var(--font-display)", "ui-sans-serif", "system-ui"],
+				body: ["var(--font-body)", "ui-sans-serif", "system-ui"],
+				mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+			},
+			fontSize: {
+				"display-2xl": [
+					"clamp(3rem, 6vw + 1rem, 5.5rem)",
+					{ lineHeight: "0.95", letterSpacing: "-0.035em", fontWeight: "600" },
+				],
+				"display-xl": [
+					"clamp(2.5rem, 4.5vw + 1rem, 4rem)",
+					{ lineHeight: "1", letterSpacing: "-0.03em", fontWeight: "600" },
+				],
+				"display-lg": [
+					"clamp(2rem, 3vw + 1rem, 3rem)",
+					{ lineHeight: "1.1", letterSpacing: "-0.025em", fontWeight: "600" },
+				],
+				"display-md": [
+					"clamp(1.5rem, 1.5vw + 1rem, 2rem)",
+					{ lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600" },
+				],
+				"display-sm": [
+					"1.25rem",
+					{ lineHeight: "1.3", letterSpacing: "-0.015em", fontWeight: "600" },
+				],
+			},
+			spacing: {
+				"4.5": "1.125rem",
+				"5.5": "1.375rem",
+				"15": "3.75rem",
+				"18": "4.5rem",
+				"22": "5.5rem",
+				"30": "7.5rem",
+				"34": "8.5rem",
+			},
+			keyframes: {
+				"fade-in": {
+					from: { opacity: "0" },
+					to: { opacity: "1" },
+				},
+				"fade-up": {
+					from: { opacity: "0", transform: "translateY(8px)" },
+					to: { opacity: "1", transform: "translateY(0)" },
+				},
+				"fade-down": {
+					from: { opacity: "0", transform: "translateY(-8px)" },
+					to: { opacity: "1", transform: "translateY(0)" },
+				},
+				"pulse-signal": {
+					"0%, 100%": { opacity: "0.4", transform: "scale(1)" },
+					"50%": { opacity: "0.8", transform: "scale(1.05)" },
+				},
+				"sound-wave": {
+					"0%, 100%": { transform: "scaleY(0.4)" },
+					"50%": { transform: "scaleY(1)" },
+				},
+				marquee: {
+					from: { transform: "translateX(0)" },
+					to: { transform: "translateX(calc(-50% - var(--gap, 1rem)))" },
+				},
+				"marquee-reverse": {
+					from: { transform: "translateX(calc(-50% - var(--gap, 1rem)))" },
+					to: { transform: "translateX(0)" },
+				},
+				"draw-line": {
+					from: { strokeDashoffset: "100%" },
+					to: { strokeDashoffset: "0" },
+				},
+				"iris-blink": {
+					"0%, 92%, 100%": { transform: "scaleY(1)" },
+					"95%": { transform: "scaleY(0.05)" },
+				},
+				shimmer: {
+					from: { backgroundPosition: "-200% 0" },
+					to: { backgroundPosition: "200% 0" },
+				},
+			},
+			animation: {
+				"fade-in": "fade-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both",
+				"fade-up": "fade-up 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
+				"fade-down": "fade-down 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
+				"pulse-signal": "pulse-signal 3s ease-in-out infinite",
+				"sound-wave": "sound-wave 1.4s ease-in-out infinite",
+				marquee: "marquee var(--marquee-duration, 40s) linear infinite",
+				"marquee-reverse":
+					"marquee-reverse var(--marquee-duration, 40s) linear infinite",
+				"draw-line": "draw-line 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards",
+				"iris-blink": "iris-blink 6s ease-in-out infinite",
+				shimmer: "shimmer 3s linear infinite",
+			},
+			transitionTimingFunction: {
+				"out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+				"in-out-expo": "cubic-bezier(0.87, 0, 0.13, 1)",
+				"out-quart": "cubic-bezier(0.25, 1, 0.5, 1)",
+			},
+		},
+	},
+	plugins: [require("tailwindcss-animate")],
 } satisfies Config;

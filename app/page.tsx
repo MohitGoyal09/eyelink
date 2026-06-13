@@ -1,74 +1,28 @@
-import Feature from "@/components/Feature";
-
 import { Hero } from "@/components/hero";
-import Header from "@/components/ui/header";
-import { Testimonials } from "@/components/Testinomial";
+import { Ecosystem } from "@/components/ecosystem";
+import { Testimonials } from "@/components/testimonials";
+import { Pricing } from "@/components/pricing";
 
-import { Pricing } from "@/components/ui/pricing";
-
+/**
+ * Eyelink landing page.
+ *
+ * Header and Footer are mounted in `app/layout.tsx` so they appear on every
+ * page. The page itself is a tight sequence:
+ *
+ *   1. Hero            — pitch + 2×2 product grid
+ *   2. Ecosystem       — 2×2 detailed product showcase with live previews
+ *   3. Testimonials    — CSS marquee, two rows, hover-paused
+ *   4. Pricing         — three honest tiers
+ *
+ * Section order is deliberate: each section earns the next one.
+ */
 export default function Home() {
-  return (
-    <>
-      <Header />
-      <Hero />
-      <Feature />
-      <Pricing
-        plans={[
-          {
-            name: "Asl",
-            price: "299",
-            yearlyPrice: "199",
-            period: "month",
-            features: [
-              "Basic ASL Translation",
-              "24/7 Support",
-              "Mobile Access",
-            ],
-            description: "Perfect for individuals starting their journey",
-            buttonText: "Get Started",
-            href: "/signup",
-            isPopular: false,
-          },
-          {
-            name: "Audio Navigation",
-            price: "499",
-            yearlyPrice: "399",
-            period: "month",
-            features: [
-              "Real-time Audio Navigation",
-              "Object & Obstacle Detection",
-              "Voice Guidance",
-              "Location Mapping",
-            ],
-            description: "Asl + Audio Navigation",
-            buttonText: "Start Pro",
-            href: "/signup-pro",
-            isPopular: true,
-          },
-          {
-            name: "Asl + Audio Navigation",
-            price: "799",
-            yearlyPrice: "699",
-            period: "month",
-            features: [
-              "Premium ASL Translation",
-              "Real-time Audio Navigation",
-              "Object & Obstacle Detection",
-              "Voice Guidance",
-              "Location Mapping",
-              "24/7 Priority Support",
-              "Mobile & Desktop Access",
-              "Custom ASL Signs",
-              "API Integration",
-            ],
-            description: "For organizations and institutions",
-            buttonText: "Contact Sales",
-            href: "/contact",
-            isPopular: false,
-          },
-        ]}
-      />
-      <Testimonials />
-    </>
-  );
+	return (
+		<main>
+			<Hero />
+			<Ecosystem />
+			<Testimonials />
+			<Pricing />
+		</main>
+	);
 }

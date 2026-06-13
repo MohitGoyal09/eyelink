@@ -1,217 +1,246 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Menu, MoveRight, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useRouter } from "next/navigation";
-import { FaEye } from "react-icons/fa";
+import { usePathname } from "next/navigation";
+import { Logo } from "@/components/logo";
+import { cn } from "@/lib/utils";
 
-// Define a type for Navigation Item for better type safety and readability
 type NavItem = {
-  title: string;
-  href: string; // href is required now in the type
-  description?: string; // Optional description for dropdown items
-  items?: { title: string; href: string }[]; // Optional sub-items for dropdowns
+	title: string;
+	href: string;
+	description?: string;
 };
 
+const products: NavItem[] = [
+	{
+		title: "ASL Translator",
+		href: "/asl",
+		description: "Sign language to text and speech, in real time.",
+	},
+	{
+		title: "Audio Navigation",
+		href: "/audioNav",
+		description: "Hear your surroundings, walk with confidence.",
+	},
+	{
+		title: "Book Assistant",
+		href: "/cabs",
+		description: "Accessible rides and on-demand travel help.",
+	},
+	{
+		title: "Wheelchair Routes",
+		href: "/wheelchair",
+		description: "Routes that actually work for your wheels.",
+	},
+];
+
+const secondary: NavItem[] = [
+	{ title: "Pricing", href: "/pricing" },
+	{ title: "FAQ", href: "/faq" },
+	{ title: "About", href: "/about" },
+	{ title: "Contact", href: "/contact" },
+];
+
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+	const [isOpen, setIsOpen] = useState(false);
+	const [scrolled, setScrolled] = useState(false);
+	const pathname = usePathname();
 
-  const navigationItems: NavItem[] = [
-    // Use the NavItem type
-    {
-      title: "ASL Translator",
-      href: "/asl",
-      description: "Translate sign language to text/speech and vice versa",
-    },
-    {
-      title: "Book Assistant",
-      href: "/cabs",
-      description:
-        "Book accessible transportation for differently-abled people",
-    },
-    // {
-    //   title: "Travel Assistants",
-    //   href: "/care",
-    //   description: "Find and connect with dedicated care personnel",
-    // },
-    {
-      title: "Audio Navigation",
-      href: "/audioNav",
-      description: "Auto Navigate your way",
-    },
-    {
-      title: "Wheelchair Accessibility",
-      href: "/wheelchair",
-      description: "Find wheelchair-friendly locations",
-    },
-    {
-      title: "More", // Group less primary links under "More" for cleaner top-level nav
-      href: "#", // Added href for "More" - using '#' as a placeholder as it's a dropdown trigger
-      items: [
-        {title: "Travel Assistants", href: "/care" },
-        { title: "Pricing", href: "/pricing" },
-        { title: "FAQ", href: "/faq" },
-        { title: "About Us", href: "/about" },
-        { title: "Contact", href: "/contact" },
-         
-      ],
-    },
-  ];
+	// Track scroll for backdrop-blur transition (per Emil: small detail that compounds)
+	useEffect(() => {
+		const onScroll = () => setScrolled(window.scrollY > 8);
+		onScroll();
+		window.addEventListener("scroll", onScroll, { passive: true });
+		return () => window.removeEventListener("scroll", onScroll);
+	}, []);
 
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <nav className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-              <FaEye className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-xl font-bold">Eyelink</span>
-          </Link>
+	// Close mobile menu on route change
+	useEffect(() => {
+		setIsOpen(false);
+	}, [pathname]);
 
-          <div className="hidden md:flex md:items-center md:space-x-6">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {navigationItems.map((item) => (
-                  <NavigationMenuItem key={item.title}>
-                    {item.items ? (
-                      <>
-                        <NavigationMenuTrigger>
-                          {item.title}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                            {item.items.map((subItem) => (
-                              <li key={subItem.title}>
-                                <NavigationMenuLink asChild>
-                                  <Link
-                                    href={subItem.href}
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                  >
-                                    <div className="text-sm font-medium leading-none">
-                                      {subItem.title}
-                                    </div>
-                                  </Link>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={item.href}
-                            className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                          >
-                            {item.title}
-                          </Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+	return (
+		<header
+			className={cn(
+				"fixed top-0 left-0 right-0 z-50",
+				"border-b transition-[background-color,backdrop-filter,border-color] duration-300 ease-out-expo",
+				scrolled
+					? "border-border/60 bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+					: "border-transparent bg-transparent",
+			)}
+		>
+			<div className="eyelink-container">
+				<nav className="flex h-16 items-center justify-between">
+					<Link href="/" className="press" aria-label="Eyelink home">
+						<Logo size="md" />
+					</Link>
 
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              <Button
-                variant="ghost"
-                onClick={() => router.push("/sign-in")}
-              >
-                Login
-              </Button>
-              {/* <Button onClick={() => router.push("/asl")}>
-                Try ASL Translator
-                <MoveRight className="ml-2 h-4 w-4" />
-              </Button> */}
-            </div>
-          </div>
+					{/* Desktop nav */}
+					<div className="hidden lg:flex lg:items-center lg:gap-1">
+						<NavigationMenu>
+							<NavigationMenuList>
+								{products.map((item) => {
+									const active = pathname === item.href;
+									return (
+										<NavigationMenuItem key={item.title}>
+											<NavigationMenuLink asChild>
+												<Link
+													href={item.href}
+													className={cn(
+														"group relative inline-flex h-10 items-center px-3 text-sm font-medium",
+														"text-muted-foreground transition-colors duration-200",
+														"hover:text-foreground",
+														"focus-visible:text-foreground",
+														active && "text-foreground",
+													)}
+												>
+													{item.title}
+													{/* Underline that grows from center on hover/active */}
+													<span
+														className={cn(
+															"pointer-events-none absolute inset-x-3 -bottom-px h-px",
+															"origin-center scale-x-0 bg-foreground/80",
+															"transition-transform duration-300 ease-out-expo",
+															"group-hover:scale-x-100",
+															active && "scale-x-100",
+														)}
+													/>
+												</Link>
+											</NavigationMenuLink>
+										</NavigationMenuItem>
+									);
+								})}
 
-          <div className="md:hidden flex items-center space-x-4">
-            <ThemeToggle />
-            <button onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </nav>
+								<NavigationMenuItem>
+									<NavigationMenuTrigger className="text-muted-foreground hover:text-foreground">
+										More
+									</NavigationMenuTrigger>
+									<NavigationMenuContent>
+										<ul className="grid w-[320px] gap-1 p-3">
+											{secondary.map((item) => (
+												<li key={item.title}>
+													<NavigationMenuLink asChild>
+														<Link
+															href={item.href}
+															className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+														>
+															<div className="text-sm font-medium leading-none">
+																{item.title}
+															</div>
+														</Link>
+													</NavigationMenuLink>
+												</li>
+											))}
+										</ul>
+									</NavigationMenuContent>
+								</NavigationMenuItem>
+							</NavigationMenuList>
+						</NavigationMenu>
+					</div>
 
-        {isOpen && (
-          <div className="md:hidden">
-            <div className="space-y-4 px-4 pb-4 pt-2">
-              {navigationItems.map((item) => (
-                <div key={item.title} className="space-y-2">
-                  {item.items ? (
-                    <>
-                      <div className="font-medium">{item.title}</div>
-                      <div className="ml-4 space-y-2">
-                        {item.items.map((subItem) => (
-                          <Link
-                            key={subItem.title}
-                            href={subItem.href}
-                            className="block text-sm text-muted-foreground hover:text-foreground"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {subItem.title}
-                          </Link>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="block font-medium hover:text-foreground"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.title}
-                    </Link>
-                  )}
-                </div>
-              ))}
-              <div className="space-y-2 border-t pt-4">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    router.push("/sign-in");
-                    setIsOpen(false);
-                  }}
-                >
-                  Login
-                </Button>
-                {/* <Button
-                  className="w-full justify-start"
-                  onClick={() => {
-                    router.push("/asl");
-                    setIsOpen(false);
-                  }}
-                >
-                  Try ASL Translator
-                  <MoveRight className="ml-2 h-4 w-4" />
-                </Button> */}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </header>
-  );
+					<div className="hidden items-center gap-2 lg:flex">
+						<ThemeToggle />
+						<Link
+							href="/sign-in"
+							className={cn(
+								buttonVariants({ variant: "ghost", size: "sm" }),
+								"text-muted-foreground hover:text-foreground",
+							)}
+						>
+							Sign in
+						</Link>
+						<Button size="sm" className="press group gap-1.5" asChild>
+							<Link href="/asl">
+								Try the demo
+								<MoveRight className="size-3.5 transition-transform duration-200 ease-out-expo group-hover:translate-x-0.5" />
+							</Link>
+						</Button>
+					</div>
+
+					{/* Mobile nav trigger */}
+					<div className="flex items-center gap-2 lg:hidden">
+						<ThemeToggle />
+						<button
+							type="button"
+							onClick={() => setIsOpen(!isOpen)}
+							className="press inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground/80 hover:bg-accent hover:text-foreground"
+							aria-label={isOpen ? "Close menu" : "Open menu"}
+							aria-expanded={isOpen}
+						>
+							{isOpen ? (
+								<X className="h-5 w-5" />
+							) : (
+								<Menu className="h-5 w-5" />
+							)}
+						</button>
+					</div>
+				</nav>
+
+				{/* Mobile menu */}
+				{isOpen && (
+					<div className="border-t border-border/40 py-4 lg:hidden">
+						<div className="space-y-1">
+							<p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+								Products
+							</p>
+							{products.map((item) => (
+								<Link
+									key={item.title}
+									href={item.href}
+									className="block rounded-md px-3 py-2.5 text-base font-medium text-foreground/90 hover:bg-accent hover:text-foreground"
+									onClick={() => setIsOpen(false)}
+								>
+									{item.title}
+								</Link>
+							))}
+
+							<p className="px-3 pb-2 pt-4 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+								More
+							</p>
+							{secondary.map((item) => (
+								<Link
+									key={item.title}
+									href={item.href}
+									className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+									onClick={() => setIsOpen(false)}
+								>
+									{item.title}
+								</Link>
+							))}
+
+							<div className="mt-4 flex flex-col gap-2 border-t border-border/40 pt-4">
+								<Link
+									href="/sign-in"
+									className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+									onClick={() => setIsOpen(false)}
+								>
+									Sign in
+								</Link>
+								<Link
+									href="/asl"
+									className={buttonVariants({ size: "default" }) + " w-full"}
+									onClick={() => setIsOpen(false)}
+								>
+									Try the demo
+									<MoveRight className="ml-2 size-4" />
+								</Link>
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
+		</header>
+	);
 }

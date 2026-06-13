@@ -1,173 +1,142 @@
-import React from "react";
-import {
-  FaEye,
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedinIn,
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
-} from "react-icons/fa";
 import Link from "next/link";
+import { Logo } from "@/components/logo";
+import { cn } from "@/lib/utils";
 
+const products = [
+	{ name: "ASL Translator", href: "/asl" },
+	{ name: "Audio Navigation", href: "/audioNav" },
+	{ name: "Book Assistant", href: "/cabs" },
+	{ name: "Wheelchair Routes", href: "/wheelchair" },
+];
+
+const company = [
+	{ name: "About", href: "/about" },
+	{ name: "Contact", href: "/contact" },
+	{ name: "Careers", href: "/careers" },
+	{ name: "Press", href: "/press" },
+];
+
+const resources = [
+	{ name: "Pricing", href: "/pricing" },
+	{ name: "FAQ", href: "/faq" },
+	{ name: "Accessibility statement", href: "/accessibility" },
+	{ name: "Research", href: "/research" },
+];
+
+const legal = [
+	{ name: "Privacy", href: "/privacy" },
+	{ name: "Terms", href: "/terms" },
+	{ name: "Cookies", href: "/cookies" },
+];
+
+/**
+ * Footer — four columns + bottom bar, dark, calm, with the Eyelink voice.
+ * No blue/purple gradient logo, no stock social icon blob.
+ */
 export default function Footer() {
-  return (
-    <footer className="w-full bg-gradient-to-b from-background to-background/50 border-t border-border/10">
-      <div className="container mx-auto px-4 py-16">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand Section */}
-          <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-blue-500/25 transition-shadow duration-500">
-                <FaEye className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                  Eyelink
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Bridging Hearts, Paving Ways
-                </p>
-              </div>
-            </Link>
+	return (
+		<footer className="relative mt-24 border-t border-border/40">
+			<div className="eyelink-container py-16">
+				<div className="grid grid-cols-2 gap-10 md:grid-cols-5">
+					{/* Brand column — spans 2 on md */}
+					<div className="col-span-2 md:col-span-2">
+						<Link href="/" className="inline-flex">
+							<Logo size="md" />
+						</Link>
+						<p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+							One platform for the people who don't have time to juggle five
+							apps. Made for hearing, visual, and mobility independence.
+						</p>
 
-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
-              Empowering differently-abled individuals through innovative
-              solutions for accessible communication, mobility, and dedicated
-              care services.
-            </p>
+						{/* Social — text links, no gradient icons */}
+						<div className="mt-6 flex items-center gap-4 text-sm">
+							<FooterSocialLink
+								href="https://twitter.com"
+								label="X (Twitter)"
+							/>
+							<FooterSocialLink href="https://linkedin.com" label="LinkedIn" />
+							<FooterSocialLink href="https://github.com" label="GitHub" />
+						</div>
+					</div>
 
-            <div className="flex items-center gap-4">
-              {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map(
-                (Icon, i) => (
-                  <a
-                    key={i}
-                    href="#"
-                    className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-blue-500 hover:text-white transition-all duration-300"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                )
-              )}
-            </div>
-          </div>
+					{/* Products */}
+					<FooterColumn title="Products" links={products} />
 
-          {/* Quick Links */}
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <ul className="space-y-3">
-              {[
-                { text: "ASL Translator", href: "/asl" },
-                { text: "Specialized Cabs", href: "/cabs" },
-                { text: "Care Providers", href: "/care" },
-                { text: "About Us", href: "/about" },
-                { text: "Contact", href: "/contact" },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground/80 hover:text-blue-500 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <div className="w-1 h-1 rounded-full bg-blue-500/50" />
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+					{/* Company */}
+					<FooterColumn title="Company" links={company} />
 
-          {/* Services */}
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Our Services</h3>
-            <ul className="space-y-3">
-              {[
-                { text: "Live ASL Translation", href: "/asl/live" },
-                { text: "Text to ASL", href: "/asl/text" },
-                { text: "Emergency Transport", href: "/cabs/emergency" },
-                { text: "Care Matching", href: "/care/match" },
-                { text: "Support & Training", href: "/support" },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground/80 hover:text-blue-500 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <div className="w-1 h-1 rounded-full bg-blue-500/50" />
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+					{/* Resources */}
+					<FooterColumn title="Resources" links={resources} />
+				</div>
 
-          {/* Contact Info */}
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Get in Touch</h3>
-            <ul className="space-y-4">
-              {[
-                {
-                  icon: FaMapMarkerAlt,
-                  content:
-                    "123 Inclusivity Plaza, Accessibility District, MD 54321",
-                },
-                {
-                  icon: FaPhone,
-                  content: "1-800-EYE-LINK",
-                  href: "tel:1-800-EYE-LINK",
-                },
-                {
-                  icon: FaEnvelope,
-                  content: "support@eyelink.com",
-                  href: "mailto:support@eyelink.com",
-                },
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex gap-3 text-sm text-muted-foreground/80"
-                >
-                  <item.icon className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      className="hover:text-blue-500 transition-colors duration-200"
-                    >
-                      {item.content}
-                    </a>
-                  ) : (
-                    <span>{item.content}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+				{/* Bottom bar */}
+				<div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border/40 pt-8 md:flex-row md:items-center">
+					<p className="text-xs text-muted-foreground">
+						© {new Date().getFullYear()} Eyelink. Made for independence.
+					</p>
+					<ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
+						{legal.map((l) => (
+							<li key={l.href}>
+								<Link
+									href={l.href}
+									className="text-xs text-muted-foreground transition-colors duration-200 hover:text-foreground"
+								>
+									{l.name}
+								</Link>
+							</li>
+						))}
+					</ul>
+				</div>
+			</div>
+		</footer>
+	);
+}
 
-        {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-border/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground/70">
-              © {new Date().getFullYear()} Eyelink. All rights reserved.
-            </p>
-            <div className="flex flex-wrap justify-center gap-8">
-              {[
-                { text: "Privacy Policy", href: "/privacy" },
-                { text: "Terms of Service", href: "/terms" },
-                { text: "Accessibility", href: "/accessibility" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-muted-foreground/70 hover:text-blue-500 transition-colors duration-200"
-                >
-                  {link.text}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+function FooterColumn({
+	title,
+	links,
+}: {
+	title: string;
+	links: { name: string; href: string }[];
+}) {
+	return (
+		<div>
+			<h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+				{title}
+			</h3>
+			<ul className="mt-4 space-y-2.5">
+				{links.map((l) => (
+					<li key={l.href}>
+						<Link
+							href={l.href}
+							className={cn(
+								"text-sm text-foreground/80 transition-colors duration-200",
+								"hover:text-foreground",
+							)}
+						>
+							{l.name}
+						</Link>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
+
+function FooterSocialLink({ href, label }: { href: string; label: string }) {
+	return (
+		<Link
+			href={href}
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label={label}
+			className={cn(
+				"text-muted-foreground transition-colors duration-200 hover:text-foreground",
+			)}
+		>
+			<span className="text-sm underline-offset-4 hover:underline">
+				{label}
+			</span>
+		</Link>
+	);
 }

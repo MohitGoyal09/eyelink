@@ -1,175 +1,177 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { MoveRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
+import { ProductTile } from "@/components/product-tile";
 
-interface AnimatedBlobProps {
-  className?: string;
-  size?: string;
-  delay?: number;
-  duration?: number;
-  blur?: string;
-  initialX: string | number;
-  initialY: string | number;
-  animate: { x: string | number; y: string | number };
-}
-
-const AnimatedBlob = ({
-  className,
-  size = "w-64 h-64",
-  delay = 0,
-  duration = 20,
-  blur = "blur-3xl",
-  initialX,
-  initialY,
-  animate,
-}: AnimatedBlobProps) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
-  return (
-    <motion.div
-      className={cn(
-        "absolute rounded-full",
-        isDark ? "opacity-30 bg-primary/40" : "opacity-50 bg-primary/60",
-        size,
-        blur,
-        className
-      )}
-      initial={{
-        x: initialX,
-        y: initialY,
-      }}
-      animate={animate}
-      transition={{
-        duration,
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: "easeInOut",
-        delay,
-      }}
-    />
-  );
-};
-
+/**
+ * Hero — "One platform. Every accessibility need."
+ *
+ * Composition:
+ *   Eyebrow → Headline → Subhead → CTA pair → 2×2 product grid
+ *
+ * Motion: staggered text reveal (60-80ms), ease-out-expo, 600ms. The 2×2 grid
+ * fades up after the headline lands so the eye reads top-down.
+ */
 export function Hero() {
-  const router = useRouter();
+	const reduceMotion = useReducedMotion();
 
-  return (
-    <div className="relative overflow-hidden bg-background min-h-[650px] lg:min-h-[750px]">
-      {/* Blue blobs */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        {/* Large blob left */}
-        <AnimatedBlob
-          size="w-96 h-96"
-          blur="blur-3xl"
-          initialX="-20%"
-          initialY="10%"
-          animate={{ x: "-10%", y: "15%" }}
-          delay={0}
-          duration={15}
-        />
+	const ease = [0.16, 1, 0.3, 1] as const;
+	const stagger = {
+		hidden: {},
+		show: {
+			transition: {
+				staggerChildren: reduceMotion ? 0 : 0.08,
+				delayChildren: 0.05,
+			},
+		},
+	};
+	const item = {
+		hidden: { opacity: 0, y: 12 },
+		show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+	};
 
-        {/* Medium blob right top */}
-        <AnimatedBlob
-          size="w-64 h-64"
-          blur="blur-2xl"
-          initialX="75%"
-          initialY="-10%"
-          animate={{ x: "70%", y: "0%" }}
-          delay={2}
-          duration={18}
-        />
+	return (
+		<section className="relative isolate overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+			{/* Background: subtle radial brand wash + grain, no aurora blobs */}
+			<div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+				<div
+					className="absolute inset-0"
+					style={{
+						background:
+							"radial-gradient(ellipse 80% 50% at 50% -10%, hsl(var(--signal) / 0.08), transparent 60%), radial-gradient(ellipse 60% 40% at 100% 50%, hsl(var(--audionav) / 0.05), transparent 60%)",
+					}}
+				/>
+				<div className="absolute inset-0 vignette-bottom" />
+			</div>
 
-        {/* Small blob bottom left */}
-        <AnimatedBlob
-          size="w-24 h-24"
-          blur="blur-xl"
-          initialX="10%"
-          initialY="80%"
-          animate={{ x: "15%", y: "75%" }}
-          delay={1}
-          duration={12}
-        />
+			<div className="eyelink-container">
+				<motion.div
+					variants={stagger}
+					initial="hidden"
+					animate="show"
+					className="mx-auto max-w-3xl text-center"
+				>
+					{/* Eyebrow */}
+					<motion.div variants={item}>
+						<span
+							className={cn(
+								"inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-surface-raised/50 px-3 py-1",
+								"text-xs font-medium text-muted-foreground",
+							)}
+						>
+							<span className="relative flex h-1.5 w-1.5">
+								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-60" />
+								<span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-signal" />
+							</span>
+							For people with hearing, visual, and mobility needs
+						</span>
+					</motion.div>
 
-        {/* Small blob bottom right */}
-        <AnimatedBlob
-          size="w-40 h-40"
-          blur="blur-2xl"
-          initialX="80%"
-          initialY="70%"
-          animate={{ x: "85%", y: "65%" }}
-          delay={3}
-          duration={20}
-        />
-      </div>
+					{/* Headline */}
+					<motion.h1
+						variants={item}
+						className="mt-6 font-display text-display-2xl text-foreground"
+					>
+						One platform.
+						<br />
+						<span className="text-muted-foreground">
+							Every accessibility need.
+						</span>
+					</motion.h1>
 
-      {/* Simple background with subtle pattern - reduced opacity for better visibility of blobs */}
-      <div className="absolute inset-0 bg-grid-small-black/[0.1] -z-10" />
+					{/* Subhead */}
+					<motion.p
+						variants={item}
+						className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+					>
+						Eyelink unifies ASL translation, audio navigation, accessible rides,
+						and wheelchair-friendly routes — so independence doesn't mean
+						juggling five apps.
+					</motion.p>
 
-      {/* Content */}
-      <div className="relative flex flex-col items-center justify-center px-6 py-24 text-center space-y-10 max-w-5xl mx-auto">
-        {/* Simple announcement banner */}
-        <div className="bg-muted py-2 px-4 rounded-full text-sm font-medium">
-          🌟 Welcome to Eyelink
-        </div>
+					{/* CTAs */}
+					<motion.div
+						variants={item}
+						className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-3"
+					>
+						<Link
+							href="/asl"
+							className={cn(
+								"press group inline-flex h-11 items-center justify-center gap-2 rounded-md bg-foreground px-6 text-sm font-medium text-background",
+								"transition-colors duration-200 hover:bg-foreground/90",
+							)}
+						>
+							Try the ASL demo
+							<MoveRight className="size-4 transition-transform duration-200 ease-out-expo group-hover:translate-x-0.5" />
+						</Link>
+						<Link
+							href="#how-it-works"
+							className={cn(
+								"press group inline-flex h-11 items-center justify-center gap-2 rounded-md border border-border/70 bg-background/30 px-6 text-sm font-medium text-foreground",
+								"backdrop-blur-sm transition-colors duration-200 hover:bg-accent hover:border-border",
+							)}
+						>
+							See how it works
+						</Link>
+					</motion.div>
 
-        {/* Main headline with subtle animation */}
-        <motion.div
-          className="space-y-2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Bridging Hearts
-          </h1>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Paving Ways 
-          </h1>
-        </motion.div>
+					{/* Quiet social proof line */}
+					<motion.p
+						variants={item}
+						className="mt-6 text-xs text-muted-foreground/70"
+					>
+						Tested on a college campus. Surveyed 150+ users. Free to start.
+					</motion.p>
+				</motion.div>
 
-        <p className="text-xl font-medium text-muted-foreground max-w-2xl">
-          Making life more accessible and inclusive for differently-abled
-          individuals.
-        </p>
-
-        <p className="text-base sm:text-lg text-muted-foreground/80 max-w-2xl mx-auto">
-          Experience seamless communication, accessible transportation, and
-          dedicated care, all in one place. Eyelink is your all-in-one solution
-          to break down barriers and empower differently-abled people to live
-          fuller, more connected lives.
-        </p>
-
-        <motion.div
-          className="flex flex-wrap gap-6 mt-6 justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <Button
-            size="lg"
-            className="text-lg px-8 py-3 font-medium hover:scale-105 transition-transform"
-            onClick={() => router.push("/sign-up")}
-          >
-            Get Started Now
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            className="group text-lg px-8 py-3 flex items-center gap-2"
-            onClick={() => router.push("/about")}
-          >
-            Learn More
-            <ChevronRight className="size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-          </Button>
-        </motion.div>
-      </div>
-    </div>
-  );
+				{/* 2×2 product grid — the "one platform, four facets" idea */}
+				<motion.div
+					variants={stagger}
+					initial="hidden"
+					animate="show"
+					className="mx-auto mt-20 grid max-w-5xl grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
+				>
+					<motion.div variants={item}>
+						<ProductTile
+							href="/asl"
+							name="ASL Translator"
+							description="Real-time sign language to text and speech."
+							category="asl"
+							ctaLabel="Translate"
+						/>
+					</motion.div>
+					<motion.div variants={item}>
+						<ProductTile
+							href="/audioNav"
+							name="Audio Navigation"
+							description="Hear your surroundings, walk with confidence."
+							category="audionav"
+							ctaLabel="Listen"
+						/>
+					</motion.div>
+					<motion.div variants={item}>
+						<ProductTile
+							href="/cabs"
+							name="Book Assistant"
+							description="Accessible rides and on-demand travel help."
+							category="cabs"
+							ctaLabel="Book"
+						/>
+					</motion.div>
+					<motion.div variants={item}>
+						<ProductTile
+							href="/wheelchair"
+							name="Wheelchair Routes"
+							description="Routes that actually work for your wheels."
+							category="wheelchair"
+							ctaLabel="Explore"
+						/>
+					</motion.div>
+				</motion.div>
+			</div>
+		</section>
+	);
 }

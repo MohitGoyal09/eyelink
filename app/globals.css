@@ -2,73 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
+  /*
+   * Eyelink design system — OKLCH-equivalent HSL values, dark-first.
+   * All neutrals tinted subtly toward the inky navy brand hue (hue ~240) for subconscious cohesion.
+   */
+
   :root {
-    --background: 210 50% 98%;
-    --foreground: 222 47% 11%;
+    /* Light mode — kept honest but dark is the polished primary */
+    --background: 220 25% 97%;
+    --foreground: 222 35% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 35% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --chart-1: 221 83% 53%;
-    --chart-2: 199 89% 48%;
-    --chart-3: 210 100% 50%;
-    --chart-4: 195 100% 63%;
-    --chart-5: 210 100% 63%;
-    --radius: 0.5rem;
-    --color-1: 221 83% 53%;
-    --color-2: 199 89% 48%;
-    --color-3: 210 100% 50%;
-    --color-4: 195 100% 63%;
-    --color-5: 210 100% 63%;
+    --popover-foreground: 222 35% 8%;
+
+    /* Brand: inky navy with hint of warmth. */
+    --primary: 222 50% 18%;
+    --primary-foreground: 40 30% 96%;
+
+    --secondary: 220 18% 92%;
+    --secondary-foreground: 222 35% 18%;
+    --muted: 220 18% 94%;
+    --muted-foreground: 220 12% 38%;
+    --accent: 220 18% 92%;
+    --accent-foreground: 222 35% 18%;
+
+    --destructive: 12 70% 48%;
+    --destructive-foreground: 40 30% 96%;
+
+    --border: 220 18% 86%;
+    --input: 220 18% 86%;
+    --ring: 222 50% 28%;
+
+    /* Eyelink product category colors (HSL for shadcn compatibility) */
+    --asl: 12 75% 60%;          /* Warm coral — human, communication */
+    --audionav: 188 70% 48%;    /* Cool teal — technical, environmental */
+    --cabs: 38 90% 56%;         /* Warm amber — movement, road */
+    --wheelchair: 268 55% 64%;  /* Soft violet — mobility, dignity */
+
+    /* Signal accent — the "quietly radical" warm note */
+    --signal: 18 85% 60%;
+
+    /* Layered surfaces */
+    --surface: 220 25% 97%;
+    --surface-raised: 0 0% 100%;
+    --surface-sunken: 220 25% 94%;
+
+    --radius: 0.625rem;
   }
+
   .dark {
-    --background: 218 42% 12%;
-    --foreground: 210 40% 98%;
-    --card: 220 43% 10%;
-    --card-foreground: 210 40% 98%;
-    --popover: 220 43% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 218 40% 16%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 218 40% 16%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 218 40% 16%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 28% 17%;
-    --input: 215 28% 17%;
-    --ring: 224 76% 48%;
-    --chart-1: 221 83% 53%;
-    --chart-2: 199 89% 48%;
-    --chart-3: 210 100% 50%;
-    --chart-4: 195 100% 63%;
-    --chart-5: 210 100% 63%;
-    --color-1: 221 83% 53%;
-    --color-2: 199 89% 48%;
-    --color-3: 210 100% 50%;
-    --color-4: 195 100% 63%;
-    --color-5: 210 100% 63%;
+    /* Inky deep-navy background, never pure black, tinted toward brand hue */
+    --background: 222 32% 7%;
+    --foreground: 40 25% 95%;
+
+    --card: 222 30% 9%;
+    --card-foreground: 40 25% 95%;
+    --popover: 222 30% 9%;
+    --popover-foreground: 40 25% 95%;
+
+    /* Brand primary in dark mode — slightly lifted for AA contrast on dark */
+    --primary: 40 30% 94%;
+    --primary-foreground: 222 32% 9%;
+
+    --secondary: 222 24% 13%;
+    --secondary-foreground: 40 25% 95%;
+    --muted: 222 24% 13%;
+    --muted-foreground: 220 14% 64%;
+    --accent: 222 24% 15%;
+    --accent-foreground: 40 25% 95%;
+
+    --destructive: 8 70% 52%;
+    --destructive-foreground: 40 30% 96%;
+
+    --border: 222 22% 17%;
+    --input: 222 22% 17%;
+    --ring: 40 30% 84%;
+
+    /* Category colors — slightly desaturated for dark mode harmony */
+    --asl: 14 70% 62%;
+    --audionav: 188 60% 56%;
+    --cabs: 38 80% 60%;
+    --wheelchair: 268 50% 68%;
+
+    --signal: 18 80% 62%;
+
+    /* Layered surfaces — each step is a few % lighter, all tinted toward brand */
+    --surface: 222 32% 7%;
+    --surface-raised: 222 30% 10%;
+    --surface-sunken: 222 36% 5%;
+
+    --radius: 0.625rem;
   }
 }
 
@@ -76,20 +101,159 @@ body {
   * {
     @apply border-border;
   }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "ss01", "cv11";
+    font-synthesis: none;
+  }
+
+  /* Headings use the display family by default */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Better focus visibility — never remove focus rings, only restyle */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Selection color uses brand signal */
+  ::selection {
+    background-color: hsl(var(--signal) / 0.3);
+    color: hsl(var(--foreground));
   }
 }
 
-/* Background grid patterns */
-.bg-grid-small-black {
-  background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+@layer components {
+  /* Honest container that respects the Eyelink max-width */
+  .eyelink-container {
+    @apply mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-10;
+  }
+
+  /* The fine-line hairline border used in product tiles & cards */
+  .hairline {
+    @apply border border-border/60;
+  }
+
+  /* Press feedback — every interactive surface gets this */
+  .press {
+    @apply transition-transform duration-150 ease-out-expo active:scale-[0.97];
+  }
+
+  /* The signature link arrow */
+  .link-arrow {
+    @apply inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 transition-colors duration-200 hover:text-foreground;
+  }
+
+  .link-arrow::after {
+    content: "→";
+    @apply transition-transform duration-200 ease-out-expo;
+  }
+
+  .link-arrow:hover::after {
+    @apply translate-x-0.5;
+  }
 }
 
-.bg-grid-white {
-  background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+@layer utilities {
+  /* Subtle grain texture overlay for hero — adds tactility without noise */
+  .bg-grain {
+    background-image: radial-gradient(
+      circle at 50% 50%,
+      transparent 0%,
+      transparent 70%,
+      hsl(var(--background) / 0.4) 100%
+    );
+  }
+
+  /* Hairline radial vignette for hero depth */
+  .vignette-bottom {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 60%,
+      hsl(var(--background)) 100%
+    );
+  }
+
+  /* Animated sound-wave bars — used in product tiles */
+  .sound-bars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 16px;
+  }
+
+  .sound-bars > span {
+    display: block;
+    width: 2px;
+    background-color: currentColor;
+    border-radius: 1px;
+    transform-origin: center;
+    animation: sound-wave 1.4s ease-in-out infinite;
+  }
+
+  .sound-bars > span:nth-child(1) {
+    height: 40%;
+    animation-delay: 0s;
+  }
+  .sound-bars > span:nth-child(2) {
+    height: 80%;
+    animation-delay: 0.15s;
+  }
+  .sound-bars > span:nth-child(3) {
+    height: 60%;
+    animation-delay: 0.3s;
+  }
+  .sound-bars > span:nth-child(4) {
+    height: 100%;
+    animation-delay: 0.45s;
+  }
+  .sound-bars > span:nth-child(5) {
+    height: 50%;
+    animation-delay: 0.6s;
+  }
+
+  /* Marquee container */
+  .marquee-mask {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  /* Honor reduced motion globally — per accessibility principle */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    .sound-bars > span {
+      animation: none !important;
+    }
+  }
 }
